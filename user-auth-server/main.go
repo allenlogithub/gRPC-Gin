@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"os"
 
-	config "user-registry-server/config"
-	databases "user-registry-server/databases"
-	server "user-registry-server/server"
+	config "user-auth-server/config"
+	databases "user-auth-server/databases"
+	server "user-auth-server/server"
 )
 
 func main() {
@@ -16,7 +16,7 @@ func main() {
 		fmt.Println("Usage: server -e {mode}")
 		os.Exit(1)
 	}
-	fmt.Println("Starting user-register-server")
+	fmt.Println("Starting user-auth-server")
 	config.Init(*environment)
 	databases.InitMysql()
 	server.Init()

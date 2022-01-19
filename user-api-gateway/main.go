@@ -5,10 +5,8 @@ import (
 	"fmt"
 	"os"
 
-	// "github.com/vsouza/go-gin-boilerplate/config"
-	// "github.com/vsouza/go-gin-boilerplate/db"
-	// "github.com/vsouza/go-gin-boilerplate/server"
-	"user-api-gateway/server"
+	client "user-api-gateway/client"
+	server "user-api-gateway/server"
 )
 
 func main() {
@@ -19,6 +17,8 @@ func main() {
 	}
 	flag.Parse()
 	// config.Init(*environment)
-	// db.Init()
+	fmt.Println("Starting user-api-gateway")
+	client.InitGrpcRegisterClient()
+	client.InitGrpcAuthClient()
 	server.Init()
 }

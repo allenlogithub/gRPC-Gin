@@ -11,9 +11,33 @@ import (
 )
 
 var (
-	mysqlDb *sql.DB
-	err     error
+	conn *sql.DB
+	err  error
 )
+
+func connectMysql(cfg *mysql.Config, dbName string) *sql.DB {
+	if dbName != "" {
+		cfg.DBName = dbName
+	}
+	conn, err = sql.Open("mysql", cfg.FormatDSN())
+	if err != nil {
+		fmt.Println(err)
+		if dbName != "" {
+			log.Fatal("Connect to Mysql.database:" + dbName + "failed.")
+		}
+		log.Fatal("Connect to Mysql failed.")
+	}
+
+	return conn
+}
+
+func createMysqlDB(conn *sql.DB, dbName string) {
+	_, err = conn.Exec("CREATE DATABASE IF NOT EXISTS " + dbName)
+	if err != nil {
+		fmt.Println(err)
+		log.Fatal("Create Mysql.database:" + dbName + "failed.")
+	}
+}
 
 func InitMysql() {
 	// set database connection config
@@ -24,38 +48,29 @@ func InitMysql() {
 		Net:    c.Get("databases.mysql.net").(string),
 		Addr:   c.Get("databases.mysql.domain").(string) + ":" + c.Get("databases.mysql.port").(string),
 	}
+
 	// connect to the Mysql
-	mysqlDb, err = sql.Open("mysql", cfg.FormatDSN())
-	if err != nil {
-		fmt.Println(err)
-		log.Fatal("Connect to Mysql failed.")
-	}
-	defer mysqlDb.Close()
+	conn = connectMysql(&cfg, "")
+	defer conn.Close()
+
 	// create database:user if not exists
-	_, err = mysqlDb.Exec("CREATE DATABASE IF NOT EXISTS " + c.Get("databases.mysql.databaseName").(string))
-	if err != nil {
-		fmt.Println(err)
-		log.Fatal("Create Mysql.database:user failed.")
-	}
+	createMysqlDB(conn, c.Get("databases.mysql.databaseName").(string))
+
 	// connect to the database:user
-	cfg.DBName = c.Get("databases.mysql.databaseName").(string)
-	mysqlDb, err = sql.Open("mysql", cfg.FormatDSN())
-	if err != nil {
-		fmt.Println(err)
-		log.Fatal("Init Mysql.database:user failed.")
-	}
+	conn = connectMysql(&cfg, c.Get("databases.mysql.databaseName").(string))
+
 	// create table:register if not exists
-	// register
 	q := `
 		CREATE TABLE IF NOT EXISTS register (
 			id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-			account VARCHAR(50) NOT NULL,			
+			account VARCHAR(50) NOT NULL,
 			hashed_password VARCHAR(128) NOT NULL,
 			email VARCHAR(255) NOT NULL,
-			name VARCHAR(255) NOT NULL
+			name VARCHAR(255) NOT NULL,
+			UNIQUE (account)
 		)
 	`
-	_, err := mysqlDb.Exec(q)
+	_, err := conn.Exec(q)
 	if err != nil {
 		fmt.Println(err)
 		log.Fatal("Create Mysql.table:register failed.")
@@ -63,5 +78,5 @@ func InitMysql() {
 }
 
 func GetMysql() *sql.DB {
-	return mysqlDb
+	return conn
 }

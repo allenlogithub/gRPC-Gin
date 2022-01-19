@@ -17,7 +17,7 @@ type (
 // input: Register
 // output: int, error
 func AddRegister(r *Register) (int64, error) {
-	result, err := mysqlDb.Exec("INSERT INTO register (account, hashed_password, email, name) VALUES (?, ?, ?, ?)", r.Account, r.HashedPassword, r.Email, r.Name)
+	result, err := conn.Exec("INSERT INTO register (account, hashed_password, email, name) VALUES (?, ?, ?, ?)", r.Account, r.HashedPassword, r.Email, r.Name)
 	if err != nil {
 		return 0, fmt.Errorf("AddRegister: %v", err)
 	}

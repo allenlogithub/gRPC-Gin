@@ -3,16 +3,14 @@ package controllers
 import (
 	"context"
 	"flag"
-	"fmt"
 	"log"
-	// "net/http"
+	"net/http"
 	"time"
 
 	"github.com/gin-gonic/gin"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 
-	hs "user-api-gateway/crypto"
 	proto "user-api-gateway/proto"
 )
 
@@ -39,52 +37,40 @@ func (u UserController) Register(c *gin.Context) {
 	err := c.BindJSON(&r)
 	if err != nil {
 		c.JSON(c.Writer.Status(), gin.H{
-			"message": "bad request",
-			"err":     err,
+			"message": "BadRequest",
+			"err":     err.Error(),
 		})
 		return
 	}
-	hash, err := hs.HashAndSalt(r.Password)
-	fmt.Println(hash)
-	if err != nil {
-		c.JSON(500, gin.H{
-			"message": "registry failed",
-			"err":     err,
-		})
-		return
-	}
-	// c.JSON(http.StatusOK, gin.H{
-	// 	"message": gin.H{
-	// 		"account":         r.Account,
-	// 		"name":            r.Name,
-	// 		"email":           r.Email,
-	// 		"password":        r.Password,
-	// 		"confirmpassword": r.ConfirmPassword,
-	// 	},
-	// })
-	var s proto.RegisterRequest
-	s.Account = r.Account
-	s.Name = r.Name
-	s.Password = r.Password
-	s.ConfirmPassword = r.ConfirmPassword
 
 	connn, err := grpc.Dial(*addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)
 	}
 	defer connn.Close()
-	cli := proto.NewRegisterServiceClient(connn)
 
+	cli := proto.NewRegisterServiceClient(connn)
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
-	if err != nil {
-		log.Fatalf("did not connect: %v", err)
+	s := proto.RegisterRequest{
+		Account:         r.Account,
+		Name:            r.Name,
+		Password:        r.Password,
+		ConfirmPassword: r.ConfirmPassword,
 	}
 	res, err := cli.SetRegister(ctx, &s)
 	if err != nil {
-		log.Fatalf("did not connect: %v", err)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "RegisterFailed",
+			"err":     err.Error(),
+		})
+		return
 	}
-	fmt.Println(res)
+	c.JSON(http.StatusOK, gin.H{
+		"message": res,
+		"err":     nil,
+	})
+
 	return
 }

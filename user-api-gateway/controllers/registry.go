@@ -17,10 +17,9 @@ import (
 )
 
 type (
-	registry struct {
-		Account         string `json:"account" binding:"required"`
+	register struct {
 		Name            string `json:"name" binding:"required"`
-		Email           string `json:"email" binding:"required"`
+		Account         string `json:"account" binding:"required"`
 		Password        string `json:"password" binding:"required"`
 		ConfirmPassword string `json:"confirm_password" binding:"required"`
 	}
@@ -35,8 +34,8 @@ var (
 // check the user database whether the account exists, if true, notifying the user the account has been
 // registered, else
 // add this registry record into the redis (set TTL)
-func (u UserController) Registry(c *gin.Context) {
-	var r registry
+func (u UserController) Register(c *gin.Context) {
+	var r register
 	err := c.BindJSON(&r)
 	if err != nil {
 		c.JSON(c.Writer.Status(), gin.H{
@@ -63,10 +62,9 @@ func (u UserController) Registry(c *gin.Context) {
 	// 		"confirmpassword": r.ConfirmPassword,
 	// 	},
 	// })
-	var s proto.RegistryRequest
+	var s proto.RegisterRequest
 	s.Account = r.Account
 	s.Name = r.Name
-	s.Email = r.Email
 	s.Password = r.Password
 	s.ConfirmPassword = r.ConfirmPassword
 
@@ -75,7 +73,7 @@ func (u UserController) Registry(c *gin.Context) {
 		log.Fatalf("did not connect: %v", err)
 	}
 	defer connn.Close()
-	cli := proto.NewRegistryServiceClient(connn)
+	cli := proto.NewRegisterServiceClient(connn)
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
@@ -83,7 +81,7 @@ func (u UserController) Registry(c *gin.Context) {
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)
 	}
-	res, err := cli.SetRegistry(ctx, &s)
+	res, err := cli.SetRegister(ctx, &s)
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)
 	}

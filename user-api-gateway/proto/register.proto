@@ -5,18 +5,19 @@ option go_package = "source/user-api-gateway/proto";
 
 package proto;
 
-service RegistryService{
-    rpc SetRegistry(RegistryRequest) returns (RegistryReply) {};
+service RegisterService{
+    rpc SetRegister(RegisterRequest) returns (RegisterReply) {};
 }
 
-message RegistryRequest{
+// account is email addr.
+message RegisterRequest{
     string account = 1;
     string name = 2;
-    string email = 3;
-    string password = 4;
-    string confirmPassword = 5;
+    string password = 3;
+    string confirmPassword = 4;
 }
 
-message RegistryReply{
+// if login success, return true
+message RegisterReply{
     bool success = 1;
 }

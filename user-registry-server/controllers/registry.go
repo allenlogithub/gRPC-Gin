@@ -10,25 +10,24 @@ import (
 
 type (
 	Server struct {
-		proto.UnimplementedRegistryServiceServer
+		proto.UnimplementedRegisterServiceServer
 	}
 )
 
-func (s *Server) SetRegistry(ctx context.Context, in *proto.RegistryRequest) (*proto.RegistryReply, error) {
+func (s *Server) SetRegister(ctx context.Context, in *proto.RegisterRequest) (*proto.RegisterReply, error) {
 	hash, err := hs.HashAndSalt(in.GetPassword())
 	if err != nil {
-		return &proto.RegistryReply{Success: false}, err
+		return &proto.RegisterReply{Success: false}, err
 	}
 	r := databases.Register{
 		Account:        in.GetAccount(),
 		HashedPassword: hash,
-		Email:          in.GetEmail(),
 		Name:           in.GetName(),
 	}
 	_, err = databases.AddRegister(&r)
 	if err != nil {
-		return &proto.RegistryReply{Success: false}, err
+		return &proto.RegisterReply{Success: false}, err
 	}
 
-	return &proto.RegistryReply{Success: true}, nil
+	return &proto.RegisterReply{Success: true}, nil
 }

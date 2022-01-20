@@ -18,6 +18,9 @@ type (
 	}
 )
 
+// If first login on the device (AccessToken not in redis),
+// ask user sending (account, password) to login, else
+// update the AccessToken within redis and cookie
 func (u UserController) Login(c *gin.Context) {
 	var r login
 	if err := c.BindJSON(&r); err != nil {
@@ -43,8 +46,18 @@ func (u UserController) Login(c *gin.Context) {
 		})
 		return
 	}
+
+	// type http.Cookie struct:
+	// MaxAge=0 means no 'Max-Age' attribute specified.
+	// MaxAge<0 means delete cookie now, equivalently 'Max-Age: 0'
+	// MaxAge>0 means Max-Age attribute present and given in seconds
+	// gin.SetCookie:
+	// name, value string, maxAge int, path, domain string, secure, httpOnly bool
+	// use http -> secure=false; gin.Default().RunTLS() for https
+	domain := c.Request.Host[:len(c.Request.Host)-3]
+	c.SetCookie("AccessToken", res.AccessToken, 0, "/", domain, false, false)
 	c.JSON(http.StatusOK, gin.H{
-		"message": res,
+		"message": "login Successfully",
 		"err":     nil,
 	})
 

@@ -13,3 +13,5 @@ databases:
     databaseName: "user"
 server:
   port: "4040"
+jwt:
+  secret: "23ec00e2-9320-46b1-8acb-0cd7f0e00890"

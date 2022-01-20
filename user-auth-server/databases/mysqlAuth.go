@@ -1,12 +1,12 @@
 package databases
 
 import (
-	// "errors"
 	"fmt"
 )
 
 type (
 	RegisterInfoReply struct {
+		Id             int64
 		Name           string
 		HashedPassword string
 	}
@@ -17,20 +17,23 @@ type (
 )
 
 func GetRegisterInfo(r *RegisterInfoRequest) (*RegisterInfoReply, error) {
-	rows, err := conn.Query("SELECT name, hashed_password FROM register WHERE account = ? LIMIT 1", r.Account)
+	rows, err := conn.Query("SELECT id, name, hashed_password FROM register WHERE account = ? LIMIT 1", r.Account)
 	if err != nil {
 		return &RegisterInfoReply{
+			Id:             0,
 			Name:           "",
 			HashedPassword: "",
 		}, fmt.Errorf("GetRegisterInfo: %v", err)
 	}
+	var id int64
 	var name string
 	var hashedPassword string
 	for rows.Next() {
-		rows.Scan(&name, &hashedPassword)
+		rows.Scan(&id, &name, &hashedPassword)
 	}
 
 	rp := RegisterInfoReply{
+		Id:             id,
 		Name:           name,
 		HashedPassword: hashedPassword,
 	}

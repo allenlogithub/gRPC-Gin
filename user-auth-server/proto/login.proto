@@ -1,7 +1,7 @@
 // protoc -I=/source/proto/ --go_out=/ --go-grpc_out=/ /source/proto/database/post.proto
 syntax = "proto3";
 
-option go_package = "source/user-api-gateway/proto";
+option go_package = "source/proto";
 
 package proto;
 
@@ -16,5 +16,4 @@ message LoginRequest {
 
 message LoginReply {
     string accessToken = 1;
-    string deviceNumber = 2;
 }

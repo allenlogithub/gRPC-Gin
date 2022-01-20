@@ -4,10 +4,9 @@ import (
 	"context"
 	"errors"
 
-	"github.com/google/uuid"
-
 	hs "user-auth-server/crypto"
 	databases "user-auth-server/databases"
+	jwt "user-auth-server/jwt"
 	proto "user-auth-server/proto"
 )
 
@@ -24,20 +23,27 @@ func (s *Server) Login(ctx context.Context, in *proto.LoginRequest) (*proto.Logi
 	res, err := databases.GetRegisterInfo(&r)
 	if err != nil {
 		return &proto.LoginReply{
-			AccessToken:  "",
-			DeviceNumber: "",
+			AccessToken: "",
 		}, err
 	}
 	isMatch := hs.ComparePassword(res.HashedPassword, in.GetPassword())
 	if isMatch {
+		j := jwt.JwtInfo{
+			Account: in.GetAccount(),
+			UserId:  res.Id,
+		}
+		tk, err := jwt.CreateToken(&j)
+		if err != nil {
+			return &proto.LoginReply{
+				AccessToken: "",
+			}, errors.New("CreateTokenFailed")
+		}
 		return &proto.LoginReply{
-			AccessToken:  "12312312312313",
-			DeviceNumber: uuid.New().String(),
+			AccessToken: tk,
 		}, nil
 	}
 
 	return &proto.LoginReply{
-		AccessToken:  "",
-		DeviceNumber: "",
+		AccessToken: "",
 	}, errors.New("InvalidLoginInfo")
 }

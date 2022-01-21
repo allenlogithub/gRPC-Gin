@@ -3,7 +3,6 @@ package databases
 import (
 	"context"
 	"errors"
-	"fmt"
 	"time"
 
 	"github.com/go-redis/redis/v8"
@@ -11,7 +10,7 @@ import (
 
 type (
 	UserAccessToken struct {
-		UserAccount string
+		UserId      int64
 		AccessToken string
 		TTL         int
 	}
@@ -27,8 +26,7 @@ var (
 
 // key = accessToken, val = userAccount
 func SetAuthToken(d *UserAccessToken) error {
-	if err := connRedis.Set(ctx, d.AccessToken, d.UserAccount, time.Duration(d.TTL)*time.Second).Err(); err != nil {
-		fmt.Println(err)
+	if err := connRedis.Set(ctx, d.AccessToken, d.UserId, time.Duration(d.TTL)*time.Second).Err(); err != nil {
 		return err
 	}
 

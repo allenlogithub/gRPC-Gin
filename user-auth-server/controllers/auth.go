@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 
+	config "user-auth-server/config"
 	hs "user-auth-server/crypto"
 	databases "user-auth-server/databases"
 	jwt "user-auth-server/jwt"
@@ -39,9 +40,9 @@ func (s *Server) Login(ctx context.Context, in *proto.LoginRequest) (*proto.Logi
 			}, errors.New("CreateTokenFailed")
 		}
 		d := databases.UserAccessToken{
-			UserAccount: in.GetAccount(),
+			UserId:      res.Id,
 			AccessToken: tk,
-			TTL:         86400,
+			TTL:         config.GetConfig().Get("jwt.ttl").(int),
 		}
 		if err := databases.SetAuthToken(&d); err != nil {
 			return &proto.LoginReply{

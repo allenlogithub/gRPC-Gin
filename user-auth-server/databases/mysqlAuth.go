@@ -17,7 +17,7 @@ type (
 )
 
 func GetRegisterInfo(r *RegisterInfoRequest) (*RegisterInfoReply, error) {
-	rows, err := conn.Query("SELECT id, name, hashed_password FROM register WHERE account = ? LIMIT 1", r.Account)
+	rows, err := connMysql.Query("SELECT id, name, hashed_password FROM register WHERE account = ? LIMIT 1", r.Account)
 	if err != nil {
 		return &RegisterInfoReply{
 			Id:             0,

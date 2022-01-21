@@ -19,5 +19,6 @@ func main() {
 	fmt.Println("Starting user-auth-server")
 	config.Init(*environment)
 	databases.InitMysql()
+	databases.InitRedis()
 	server.Init()
 }

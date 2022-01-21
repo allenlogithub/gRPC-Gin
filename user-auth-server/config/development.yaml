@@ -3,7 +3,8 @@ databases:
     domain: "172.17.0.5"
     port: "6379"
     user: 
-    password:
+    password: ""
+    databaseName: 0
   mysql:
     domain: "172.17.0.7"
     port: "3306"

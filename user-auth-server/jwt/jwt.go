@@ -1,8 +1,6 @@
 package jwt
 
 import (
-	"fmt"
-
 	"github.com/golang-jwt/jwt"
 	"github.com/google/uuid"
 

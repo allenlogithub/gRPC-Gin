@@ -11,15 +11,15 @@ import (
 )
 
 var (
-	conn *sql.DB
-	err  error
+	connMysql *sql.DB
+	err       error
 )
 
 func connectMysql(cfg *mysql.Config, dbName string) *sql.DB {
 	if dbName != "" {
 		cfg.DBName = dbName
 	}
-	conn, err = sql.Open("mysql", cfg.FormatDSN())
+	connMysql, err = sql.Open("mysql", cfg.FormatDSN())
 	if err != nil {
 		fmt.Println(err)
 		if dbName != "" {
@@ -28,7 +28,7 @@ func connectMysql(cfg *mysql.Config, dbName string) *sql.DB {
 		log.Fatal("Connect to Mysql failed.")
 	}
 
-	return conn
+	return connMysql
 }
 
 func InitMysql() {
@@ -42,9 +42,9 @@ func InitMysql() {
 	}
 
 	// connect to the database:user
-	conn = connectMysql(&cfg, c.Get("databases.mysql.databaseName").(string))
+	connMysql = connectMysql(&cfg, c.Get("databases.mysql.databaseName").(string))
 }
 
 func GetMysql() *sql.DB {
-	return conn
+	return connMysql
 }

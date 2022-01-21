@@ -38,6 +38,16 @@ func (s *Server) Login(ctx context.Context, in *proto.LoginRequest) (*proto.Logi
 				AccessToken: "",
 			}, errors.New("CreateTokenFailed")
 		}
+		d := databases.UserAccessToken{
+			UserAccount: in.GetAccount(),
+			AccessToken: tk,
+			TTL:         86400,
+		}
+		if err := databases.SetAuthToken(&d); err != nil {
+			return &proto.LoginReply{
+				AccessToken: "",
+			}, errors.New("SetTokenToRedisFailed")
+		}
 		return &proto.LoginReply{
 			AccessToken: tk,
 		}, nil

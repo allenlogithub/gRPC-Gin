@@ -43,3 +43,11 @@ func GetUserAccount(d *UserOwnedToken) (string, error) {
 
 	return res, nil
 }
+
+func DeleteAuthToken(d *UserOwnedToken) error {
+	if err := connRedis.Del(ctx, d.AccessToken).Err(); err != nil {
+		return err
+	}
+
+	return nil
+}

@@ -23,6 +23,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type LoginServiceClient interface {
 	Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginReply, error)
+	Logout(ctx context.Context, in *LogoutRequest, opts ...grpc.CallOption) (*LogoutReply, error)
 }
 
 type loginServiceClient struct {
@@ -42,11 +43,21 @@ func (c *loginServiceClient) Login(ctx context.Context, in *LoginRequest, opts .
 	return out, nil
 }
 
+func (c *loginServiceClient) Logout(ctx context.Context, in *LogoutRequest, opts ...grpc.CallOption) (*LogoutReply, error) {
+	out := new(LogoutReply)
+	err := c.cc.Invoke(ctx, "/proto.LoginService/Logout", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // LoginServiceServer is the server API for LoginService service.
 // All implementations must embed UnimplementedLoginServiceServer
 // for forward compatibility
 type LoginServiceServer interface {
 	Login(context.Context, *LoginRequest) (*LoginReply, error)
+	Logout(context.Context, *LogoutRequest) (*LogoutReply, error)
 	mustEmbedUnimplementedLoginServiceServer()
 }
 
@@ -56,6 +67,9 @@ type UnimplementedLoginServiceServer struct {
 
 func (UnimplementedLoginServiceServer) Login(context.Context, *LoginRequest) (*LoginReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Login not implemented")
+}
+func (UnimplementedLoginServiceServer) Logout(context.Context, *LogoutRequest) (*LogoutReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Logout not implemented")
 }
 func (UnimplementedLoginServiceServer) mustEmbedUnimplementedLoginServiceServer() {}
 
@@ -88,6 +102,24 @@ func _LoginService_Login_Handler(srv interface{}, ctx context.Context, dec func(
 	return interceptor(ctx, in, info, handler)
 }
 
+func _LoginService_Logout_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LogoutRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LoginServiceServer).Logout(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.LoginService/Logout",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LoginServiceServer).Logout(ctx, req.(*LogoutRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // LoginService_ServiceDesc is the grpc.ServiceDesc for LoginService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -98,6 +130,10 @@ var LoginService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Login",
 			Handler:    _LoginService_Login_Handler,
+		},
+		{
+			MethodName: "Logout",
+			Handler:    _LoginService_Logout_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

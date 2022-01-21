@@ -25,6 +25,7 @@ func NewRouter() *gin.Engine {
 			// userGroup.GET("/greeting/:id", user.Login)
 			userGroup.POST("/register", user.Register)
 			userGroup.POST("/login", user.Login)
+			userGroup.POST("/logout", user.Logout)
 		}
 	}
 	return router

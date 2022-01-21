@@ -7,6 +7,7 @@ package proto;
 
 service LoginService{
     rpc Login(LoginRequest) returns (LoginReply) {};
+    rpc Logout(LogoutRequest) returns (LogoutReply) {};
 }
 
 message LoginRequest {
@@ -16,4 +17,12 @@ message LoginRequest {
 
 message LoginReply {
     string accessToken = 1;
+}
+
+message LogoutRequest {
+    string accessToken = 1;
+}
+
+message LogoutReply {
+    bool success = 1;
 }

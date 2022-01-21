@@ -63,3 +63,33 @@ func (u UserController) Login(c *gin.Context) {
 
 	return
 }
+
+func (u UserController) Logout(c *gin.Context) {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+	tk, err := c.Cookie("AccessToken")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": nil,
+			"err":     err.Error(),
+		})
+		return
+	}
+	s := proto.LogoutRequest{
+		AccessToken: tk,
+	}
+	res, err := client.GetAuthCli().Logout(ctx, &s)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": res,
+			"err":     err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"message": res,
+		"err":     nil,
+	})
+
+	return
+}

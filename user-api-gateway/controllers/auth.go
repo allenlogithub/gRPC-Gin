@@ -54,7 +54,14 @@ func (u UserController) Login(c *gin.Context) {
 	// gin.SetCookie:
 	// name, value string, maxAge int, path, domain string, secure, httpOnly bool
 	// use http -> secure=false; gin.Default().RunTLS() for https
-	domain := c.Request.Host[:len(c.Request.Host)-3]
+	colonIdx := len(c.Request.Host) - 1
+	for i := len(c.Request.Host) - 1; i >= 0; i-- {
+		if c.Request.Host[i] == byte(58) {
+			colonIdx = i
+			break
+		}
+	}
+	domain := c.Request.Host[:colonIdx]
 	c.SetCookie("AccessToken", res.AccessToken, 0, "/", domain, false, false)
 	c.JSON(http.StatusOK, gin.H{
 		"message": "login Successfully",

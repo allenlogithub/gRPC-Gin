@@ -24,6 +24,7 @@ const _ = grpc.SupportPackageIsVersion7
 type LoginServiceClient interface {
 	Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginReply, error)
 	Logout(ctx context.Context, in *LogoutRequest, opts ...grpc.CallOption) (*LogoutReply, error)
+	ValidateJWT(ctx context.Context, in *JWTValidationRequest, opts ...grpc.CallOption) (*JWTValidationReply, error)
 }
 
 type loginServiceClient struct {
@@ -52,12 +53,22 @@ func (c *loginServiceClient) Logout(ctx context.Context, in *LogoutRequest, opts
 	return out, nil
 }
 
+func (c *loginServiceClient) ValidateJWT(ctx context.Context, in *JWTValidationRequest, opts ...grpc.CallOption) (*JWTValidationReply, error) {
+	out := new(JWTValidationReply)
+	err := c.cc.Invoke(ctx, "/proto.LoginService/ValidateJWT", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // LoginServiceServer is the server API for LoginService service.
 // All implementations must embed UnimplementedLoginServiceServer
 // for forward compatibility
 type LoginServiceServer interface {
 	Login(context.Context, *LoginRequest) (*LoginReply, error)
 	Logout(context.Context, *LogoutRequest) (*LogoutReply, error)
+	ValidateJWT(context.Context, *JWTValidationRequest) (*JWTValidationReply, error)
 	mustEmbedUnimplementedLoginServiceServer()
 }
 
@@ -70,6 +81,9 @@ func (UnimplementedLoginServiceServer) Login(context.Context, *LoginRequest) (*L
 }
 func (UnimplementedLoginServiceServer) Logout(context.Context, *LogoutRequest) (*LogoutReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Logout not implemented")
+}
+func (UnimplementedLoginServiceServer) ValidateJWT(context.Context, *JWTValidationRequest) (*JWTValidationReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ValidateJWT not implemented")
 }
 func (UnimplementedLoginServiceServer) mustEmbedUnimplementedLoginServiceServer() {}
 
@@ -120,6 +134,24 @@ func _LoginService_Logout_Handler(srv interface{}, ctx context.Context, dec func
 	return interceptor(ctx, in, info, handler)
 }
 
+func _LoginService_ValidateJWT_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(JWTValidationRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LoginServiceServer).ValidateJWT(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.LoginService/ValidateJWT",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LoginServiceServer).ValidateJWT(ctx, req.(*JWTValidationRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // LoginService_ServiceDesc is the grpc.ServiceDesc for LoginService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -134,6 +166,10 @@ var LoginService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Logout",
 			Handler:    _LoginService_Logout_Handler,
+		},
+		{
+			MethodName: "ValidateJWT",
+			Handler:    _LoginService_ValidateJWT_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

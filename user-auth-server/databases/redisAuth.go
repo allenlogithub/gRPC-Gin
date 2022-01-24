@@ -35,7 +35,7 @@ func SetAuthToken(d *UserAccessToken) error {
 
 // pair with SetAuthToken
 // returns redis.Nil error when key does not exist
-func GetUserAccount(d *UserOwnedToken) (string, error) {
+func GetUserId(d *UserOwnedToken) (string, error) {
 	res := connRedis.Get(ctx, d.AccessToken).Val()
 	if err == redis.Nil {
 		return "", errors.New("RedisGetFailed")

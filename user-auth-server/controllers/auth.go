@@ -3,6 +3,7 @@ package controllers
 import (
 	"context"
 	"errors"
+	"strconv"
 
 	config "user-auth-server/config"
 	hs "user-auth-server/crypto"
@@ -71,5 +72,30 @@ func (s *Server) Logout(ctx context.Context, in *proto.LogoutRequest) (*proto.Lo
 
 	return &proto.LogoutReply{
 		Success: true,
+	}, nil
+}
+
+func (s *Server) ValidateJWT(ctx context.Context, in *proto.JWTValidationRequest) (*proto.JWTValidationReply, error) {
+	// JWT verification
+	jwtInfo, err1 := jwt.ExtractTokenData(in.GetAccessToken())
+	if err1 != nil {
+		return &proto.JWTValidationReply{
+			Valid: false,
+		}, err1
+	}
+	// check redis for JWT TTL
+	q := databases.UserOwnedToken{
+		AccessToken: in.GetAccessToken(),
+	}
+	res, err2 := databases.GetUserId(&q)
+	i64, err3 := strconv.Atoi(res)
+	if err2 != nil || err3 != nil || int64(i64) != jwtInfo.UserId {
+		return &proto.JWTValidationReply{
+			Valid: false,
+		}, err2
+	}
+
+	return &proto.JWTValidationReply{
+		Valid: true,
 	}, nil
 }

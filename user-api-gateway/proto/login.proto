@@ -8,6 +8,7 @@ package proto;
 service LoginService{
     rpc Login(LoginRequest) returns (LoginReply) {};
     rpc Logout(LogoutRequest) returns (LogoutReply) {};
+    rpc ValidateJWT(JWTValidationRequest) returns (JWTValidationReply) {};
 }
 
 message LoginRequest {
@@ -25,4 +26,12 @@ message LogoutRequest {
 
 message LogoutReply {
     bool success = 1;
+}
+
+message JWTValidationRequest {
+    string accessToken = 1;
+}
+
+message JWTValidationReply {
+    bool valid = 1;
 }

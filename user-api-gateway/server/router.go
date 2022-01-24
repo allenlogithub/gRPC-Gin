@@ -3,7 +3,8 @@ package server
 import (
 	"github.com/gin-gonic/gin"
 
-	"user-api-gateway/controllers"
+	controllers "user-api-gateway/controllers"
+	middlewares "user-api-gateway/middlewares"
 	// "github.com/vsouza/go-gin-boilerplate/middlewares"
 )
 
@@ -25,7 +26,7 @@ func NewRouter() *gin.Engine {
 			// userGroup.GET("/greeting/:id", user.Login)
 			userGroup.POST("/register", user.Register)
 			userGroup.POST("/login", user.Login)
-			userGroup.POST("/logout", user.Logout)
+			userGroup.POST("/logout", middlewares.JWTValidationMiddleware(), user.Logout)
 		}
 	}
 	return router

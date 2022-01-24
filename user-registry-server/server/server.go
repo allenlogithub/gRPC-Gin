@@ -7,6 +7,7 @@ import (
 
 	grpc "google.golang.org/grpc"
 
+	config "user-registry-server/config"
 	controllers "user-registry-server/controllers"
 	proto "user-registry-server/proto"
 )
@@ -18,7 +19,7 @@ func newServer() *controllers.Server {
 }
 
 func Init() {
-	listener, err := net.Listen("tcp", ":4040")
+	listener, err := net.Listen("tcp", ":"+config.GetConfig().Get("server.port").(string))
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)

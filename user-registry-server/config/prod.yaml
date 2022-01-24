@@ -1,0 +1,10 @@
+databases:
+  mysql:
+    domain: "172.17.0.8"
+    port: "3306"
+    user: "root"
+    password: "my-secret-pw"
+    net: "tcp"
+    databaseName: "user"
+server:
+  port: "4040"

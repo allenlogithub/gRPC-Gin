@@ -1,0 +1,8 @@
+grpcServer:
+  user:
+    register:
+      ip: "172.17.0.100"
+      port: "4040"
+    auth:
+      ip: "172.17.0.101"
+      port: "4040"

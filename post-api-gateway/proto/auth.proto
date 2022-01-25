@@ -1,0 +1,37 @@
+// protoc -I=/source/proto/ --go_out=/ --go-grpc_out=/ /source/proto/database/post.proto
+syntax = "proto3";
+
+option go_package = "source/proto";
+
+package proto;
+
+service AuthService{
+    rpc Login(LoginRequest) returns (LoginReply) {};
+    rpc Logout(LogoutRequest) returns (LogoutReply) {};
+    rpc ValidateJWT(JWTValidationRequest) returns (JWTValidationReply) {};
+}
+
+message LoginRequest {
+    string account = 1;
+    string password = 2;
+}
+
+message LoginReply {
+    string accessToken = 1;
+}
+
+message LogoutRequest {
+    string accessToken = 1;
+}
+
+message LogoutReply {
+    bool success = 1;
+}
+
+message JWTValidationRequest {
+    string accessToken = 1;
+}
+
+message JWTValidationReply {
+    bool valid = 1;
+}

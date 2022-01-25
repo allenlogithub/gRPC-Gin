@@ -1,0 +1,12 @@
+grpcServer:
+  user:
+    auth:
+      ip: "172.17.0.7"
+      port: "4040"
+  post:
+    get:
+      ip: "172.17.0.6"
+      port: "4040"
+    post:
+      ip: "172.17.0.10"
+      port: "4040"

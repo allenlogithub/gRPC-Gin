@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+option go_package = "source/proto";
+
+package proto;
+
+service PostPostService{
+    rpc PostPost(PostPostRequest) returns (PostPostReply) {};
+    rpc DelPost(DelPostRequest) returns (DelPostReply) {};
+}
+
+message PostPostRequest {
+    string accessToken = 1;
+    string content = 2;
+    string visibility = 3;
+}
+
+message PostPostReply {
+    bool success = 1;
+}
+
+message DelPostRequest {
+    string accessToken = 1;
+    string postId = 2;
+}
+
+message DelPostReply {
+    bool success = 1;
+}

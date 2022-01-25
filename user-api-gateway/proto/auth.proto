@@ -5,7 +5,7 @@ option go_package = "source/proto";
 
 package proto;
 
-service LoginService{
+service AuthService{
     rpc Login(LoginRequest) returns (LoginReply) {};
     rpc Logout(LogoutRequest) returns (LogoutReply) {};
     rpc ValidateJWT(JWTValidationRequest) returns (JWTValidationReply) {};

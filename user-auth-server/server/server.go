@@ -26,7 +26,7 @@ func Init() {
 	}
 
 	srv := grpc.NewServer()
-	proto.RegisterLoginServiceServer(srv, newServer())
+	proto.RegisterAuthServiceServer(srv, newServer())
 	fmt.Println("Prepare to serve")
 	if err := srv.Serve(listener); err != nil {
 		fmt.Println(err)

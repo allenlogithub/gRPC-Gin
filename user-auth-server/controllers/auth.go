@@ -14,7 +14,7 @@ import (
 
 type (
 	Server struct {
-		proto.UnimplementedLoginServiceServer
+		proto.UnimplementedAuthServiceServer
 	}
 )
 

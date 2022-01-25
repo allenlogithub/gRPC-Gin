@@ -11,7 +11,7 @@ import (
 )
 
 var (
-	AuthCli     proto.LoginServiceClient
+	AuthCli     proto.AuthServiceClient
 	RegisterCli proto.RegisterServiceClient
 )
 
@@ -28,13 +28,13 @@ func InitGrpcAuthClient() {
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)
 	}
-	AuthCli = proto.NewLoginServiceClient(conn)
+	AuthCli = proto.NewAuthServiceClient(conn)
 }
 
 func GetRegisterCli() proto.RegisterServiceClient {
 	return RegisterCli
 }
 
-func GetAuthCli() proto.LoginServiceClient {
+func GetAuthCli() proto.AuthServiceClient {
 	return AuthCli
 }

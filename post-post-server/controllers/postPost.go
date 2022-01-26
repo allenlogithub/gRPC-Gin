@@ -30,3 +30,20 @@ func (s *Server) PostPost(ctx context.Context, in *proto.PostPostRequest) (*prot
 		Success: true,
 	}, nil
 }
+
+func (s *Server) DelArticle(ctx context.Context, in *proto.DelArticleRequest) (*proto.DelArticleReply, error) {
+	d := databases.DelArticleRequest{
+		UserId:    in.GetUserId(),
+		ArticleId: in.GetArticleId(),
+	}
+	err := databases.DelArticle(&d)
+	if err != nil {
+		return &proto.DelArticleReply{
+			Success: false,
+		}, err
+	}
+
+	return &proto.DelArticleReply{
+		Success: true,
+	}, nil
+}

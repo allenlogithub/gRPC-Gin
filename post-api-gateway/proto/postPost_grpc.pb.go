@@ -19,7 +19,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type PostPostServiceClient interface {
 	PostPost(ctx context.Context, in *PostPostRequest, opts ...grpc.CallOption) (*PostPostReply, error)
-	DelPost(ctx context.Context, in *DelPostRequest, opts ...grpc.CallOption) (*DelPostReply, error)
+	DelArticle(ctx context.Context, in *DelArticleRequest, opts ...grpc.CallOption) (*DelArticleReply, error)
 }
 
 type postPostServiceClient struct {
@@ -39,9 +39,9 @@ func (c *postPostServiceClient) PostPost(ctx context.Context, in *PostPostReques
 	return out, nil
 }
 
-func (c *postPostServiceClient) DelPost(ctx context.Context, in *DelPostRequest, opts ...grpc.CallOption) (*DelPostReply, error) {
-	out := new(DelPostReply)
-	err := c.cc.Invoke(ctx, "/proto.PostPostService/DelPost", in, out, opts...)
+func (c *postPostServiceClient) DelArticle(ctx context.Context, in *DelArticleRequest, opts ...grpc.CallOption) (*DelArticleReply, error) {
+	out := new(DelArticleReply)
+	err := c.cc.Invoke(ctx, "/proto.PostPostService/DelArticle", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -53,7 +53,7 @@ func (c *postPostServiceClient) DelPost(ctx context.Context, in *DelPostRequest,
 // for forward compatibility
 type PostPostServiceServer interface {
 	PostPost(context.Context, *PostPostRequest) (*PostPostReply, error)
-	DelPost(context.Context, *DelPostRequest) (*DelPostReply, error)
+	DelArticle(context.Context, *DelArticleRequest) (*DelArticleReply, error)
 	mustEmbedUnimplementedPostPostServiceServer()
 }
 
@@ -64,8 +64,8 @@ type UnimplementedPostPostServiceServer struct {
 func (UnimplementedPostPostServiceServer) PostPost(context.Context, *PostPostRequest) (*PostPostReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PostPost not implemented")
 }
-func (UnimplementedPostPostServiceServer) DelPost(context.Context, *DelPostRequest) (*DelPostReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DelPost not implemented")
+func (UnimplementedPostPostServiceServer) DelArticle(context.Context, *DelArticleRequest) (*DelArticleReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DelArticle not implemented")
 }
 func (UnimplementedPostPostServiceServer) mustEmbedUnimplementedPostPostServiceServer() {}
 
@@ -98,20 +98,20 @@ func _PostPostService_PostPost_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
-func _PostPostService_DelPost_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DelPostRequest)
+func _PostPostService_DelArticle_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DelArticleRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(PostPostServiceServer).DelPost(ctx, in)
+		return srv.(PostPostServiceServer).DelArticle(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/proto.PostPostService/DelPost",
+		FullMethod: "/proto.PostPostService/DelArticle",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(PostPostServiceServer).DelPost(ctx, req.(*DelPostRequest))
+		return srv.(PostPostServiceServer).DelArticle(ctx, req.(*DelArticleRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -128,8 +128,8 @@ var PostPostService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _PostPostService_PostPost_Handler,
 		},
 		{
-			MethodName: "DelPost",
-			Handler:    _PostPostService_DelPost_Handler,
+			MethodName: "DelArticle",
+			Handler:    _PostPostService_DelArticle_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

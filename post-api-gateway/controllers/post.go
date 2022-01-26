@@ -25,7 +25,7 @@ type (
 		FileName   string
 	}
 
-	postComment struct {
+	postArticleComment struct {
 		Content string `json:"Content" binding:"required"`
 	}
 )

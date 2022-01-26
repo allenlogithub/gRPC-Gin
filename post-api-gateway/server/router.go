@@ -18,6 +18,7 @@ func NewRouter() *gin.Engine {
 		{
 			post := new(controllers.PostController)
 			postGroup.POST("/article", middlewares.JWTValidationMiddleware(), post.PostArticle)
+			postGroup.DELETE("/article", middlewares.JWTValidationMiddleware(), post.DelArticle)
 			// postGroup.GET("/", middlewares.JWTValidationMiddleware(), post.GetArticles)
 		}
 	}

@@ -7,6 +7,8 @@ package proto;
 service PostArticleService{
     rpc AddArticle(AddArticleRequest) returns (AddArticleReply) {};
     rpc DelArticle(DelArticleRequest) returns (DelArticleReply) {};
+    rpc AddArticleComment(AddArticleCommentRequest) returns (AddArticleCommentReply) {};
+    rpc DelArticleComment(DelArticleCommentRequest) returns (DelArticleCommentReply) {};
 }
 
 message AddArticleRequest {
@@ -25,5 +27,24 @@ message DelArticleRequest {
 }
 
 message DelArticleReply {
+    bool success = 1;
+}
+
+message AddArticleCommentRequest {
+    int64  userId = 1;
+    int64  articleId = 2;
+    string content = 3;
+}
+
+message AddArticleCommentReply {
+    bool success = 1;
+}
+
+message DelArticleCommentRequest {
+    int64 userId = 1;
+    int64 articleCommentId = 2;
+}
+
+message DelArticleCommentReply {
     bool success = 1;
 }

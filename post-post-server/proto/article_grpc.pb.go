@@ -20,6 +20,8 @@ const _ = grpc.SupportPackageIsVersion7
 type PostArticleServiceClient interface {
 	AddArticle(ctx context.Context, in *AddArticleRequest, opts ...grpc.CallOption) (*AddArticleReply, error)
 	DelArticle(ctx context.Context, in *DelArticleRequest, opts ...grpc.CallOption) (*DelArticleReply, error)
+	AddArticleComment(ctx context.Context, in *AddArticleCommentRequest, opts ...grpc.CallOption) (*AddArticleCommentReply, error)
+	DelArticleComment(ctx context.Context, in *DelArticleCommentRequest, opts ...grpc.CallOption) (*DelArticleCommentReply, error)
 }
 
 type postArticleServiceClient struct {
@@ -48,12 +50,32 @@ func (c *postArticleServiceClient) DelArticle(ctx context.Context, in *DelArticl
 	return out, nil
 }
 
+func (c *postArticleServiceClient) AddArticleComment(ctx context.Context, in *AddArticleCommentRequest, opts ...grpc.CallOption) (*AddArticleCommentReply, error) {
+	out := new(AddArticleCommentReply)
+	err := c.cc.Invoke(ctx, "/proto.PostArticleService/AddArticleComment", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *postArticleServiceClient) DelArticleComment(ctx context.Context, in *DelArticleCommentRequest, opts ...grpc.CallOption) (*DelArticleCommentReply, error) {
+	out := new(DelArticleCommentReply)
+	err := c.cc.Invoke(ctx, "/proto.PostArticleService/DelArticleComment", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // PostArticleServiceServer is the server API for PostArticleService service.
 // All implementations must embed UnimplementedPostArticleServiceServer
 // for forward compatibility
 type PostArticleServiceServer interface {
 	AddArticle(context.Context, *AddArticleRequest) (*AddArticleReply, error)
 	DelArticle(context.Context, *DelArticleRequest) (*DelArticleReply, error)
+	AddArticleComment(context.Context, *AddArticleCommentRequest) (*AddArticleCommentReply, error)
+	DelArticleComment(context.Context, *DelArticleCommentRequest) (*DelArticleCommentReply, error)
 	mustEmbedUnimplementedPostArticleServiceServer()
 }
 
@@ -66,6 +88,12 @@ func (UnimplementedPostArticleServiceServer) AddArticle(context.Context, *AddArt
 }
 func (UnimplementedPostArticleServiceServer) DelArticle(context.Context, *DelArticleRequest) (*DelArticleReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DelArticle not implemented")
+}
+func (UnimplementedPostArticleServiceServer) AddArticleComment(context.Context, *AddArticleCommentRequest) (*AddArticleCommentReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddArticleComment not implemented")
+}
+func (UnimplementedPostArticleServiceServer) DelArticleComment(context.Context, *DelArticleCommentRequest) (*DelArticleCommentReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DelArticleComment not implemented")
 }
 func (UnimplementedPostArticleServiceServer) mustEmbedUnimplementedPostArticleServiceServer() {}
 
@@ -116,6 +144,42 @@ func _PostArticleService_DelArticle_Handler(srv interface{}, ctx context.Context
 	return interceptor(ctx, in, info, handler)
 }
 
+func _PostArticleService_AddArticleComment_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AddArticleCommentRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PostArticleServiceServer).AddArticleComment(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.PostArticleService/AddArticleComment",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PostArticleServiceServer).AddArticleComment(ctx, req.(*AddArticleCommentRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _PostArticleService_DelArticleComment_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DelArticleCommentRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PostArticleServiceServer).DelArticleComment(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.PostArticleService/DelArticleComment",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PostArticleServiceServer).DelArticleComment(ctx, req.(*DelArticleCommentRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // PostArticleService_ServiceDesc is the grpc.ServiceDesc for PostArticleService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -130,6 +194,14 @@ var PostArticleService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DelArticle",
 			Handler:    _PostArticleService_DelArticle_Handler,
+		},
+		{
+			MethodName: "AddArticleComment",
+			Handler:    _PostArticleService_AddArticleComment_Handler,
+		},
+		{
+			MethodName: "DelArticleComment",
+			Handler:    _PostArticleService_DelArticleComment_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

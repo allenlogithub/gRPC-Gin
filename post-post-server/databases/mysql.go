@@ -58,6 +58,24 @@ func InitMysql() {
 		fmt.Println(err)
 		log.Fatal("Create Mysql.table:article failed.")
 	}
+
+	// create a child table:articlecomment if not exists
+	q = `
+		CREATE TABLE IF NOT EXISTS articlecomment (
+			id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+			user_id BIGINT NOT NULL,
+			article_id BIGINT NOT NULL,
+			content TEXT NOT NULL,			
+			FOREIGN KEY(article_id)
+				REFERENCES article(id)
+				ON DELETE CASCADE
+		)
+	`
+	_, err = connMysql.Exec(q)
+	if err != nil {
+		fmt.Println(err)
+		log.Fatal("Create Mysql.table:articlecomment failed.")
+	}
 }
 
 func GetMysql() *sql.DB {

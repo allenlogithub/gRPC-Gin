@@ -4,18 +4,18 @@ option go_package = "source/proto";
 
 package proto;
 
-service PostPostService{
-    rpc PostPost(PostPostRequest) returns (PostPostReply) {};
+service PostArticleService{
+    rpc AddArticle(AddArticleRequest) returns (AddArticleReply) {};
     rpc DelArticle(DelArticleRequest) returns (DelArticleReply) {};
 }
 
-message PostPostRequest {
+message AddArticleRequest {
     int64  userId = 1;
     string content = 2;
     string visibility = 3;
 }
 
-message PostPostReply {
+message AddArticleReply {
     bool success = 1;
 }
 

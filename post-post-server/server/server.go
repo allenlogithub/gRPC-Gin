@@ -26,7 +26,7 @@ func Init() {
 	}
 
 	srv := grpc.NewServer()
-	proto.RegisterPostPostServiceServer(srv, newServer())
+	proto.RegisterPostArticleServiceServer(srv, newServer())
 	fmt.Println("Prepare to serve")
 	if err := srv.Serve(listener); err != nil {
 		fmt.Println(err)

@@ -9,11 +9,11 @@ import (
 
 type (
 	Server struct {
-		proto.UnimplementedPostPostServiceServer
+		proto.UnimplementedPostArticleServiceServer
 	}
 )
 
-func (s *Server) PostPost(ctx context.Context, in *proto.PostPostRequest) (*proto.PostPostReply, error) {
+func (s *Server) AddArticle(ctx context.Context, in *proto.AddArticleRequest) (*proto.AddArticleReply, error) {
 	d := databases.PostArticleRequest{
 		UserId:     in.GetUserId(),
 		Content:    in.GetContent(),
@@ -21,12 +21,12 @@ func (s *Server) PostPost(ctx context.Context, in *proto.PostPostRequest) (*prot
 	}
 	_, err := databases.AddArticle(&d)
 	if err != nil {
-		return &proto.PostPostReply{
+		return &proto.AddArticleReply{
 			Success: false,
 		}, err
 	}
 
-	return &proto.PostPostReply{
+	return &proto.AddArticleReply{
 		Success: true,
 	}, nil
 }

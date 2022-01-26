@@ -22,6 +22,6 @@ func main() {
 	fmt.Println("Starting post-api-gateway")
 	config.Init(*environment)
 	client.InitGrpcAuthClient()
-	client.InitGrpcPostPostClient()
+	client.InitGrpcPostArticleClient()
 	server.Init()
 }

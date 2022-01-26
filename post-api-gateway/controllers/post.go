@@ -42,12 +42,12 @@ func (p PostController) PostArticle(c *gin.Context) {
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
-	s := proto.PostPostRequest{
+	s := proto.AddArticleRequest{
 		UserId:     c.MustGet("UserId").(int64),
 		Content:    r.Content,
 		Visibility: r.Visibility,
 	}
-	res, err2 := client.GetPostPostCli().PostPost(ctx, &s)
+	res, err2 := client.GetPostArticleCli().AddArticle(ctx, &s)
 	if err2 != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": "BadRequest",

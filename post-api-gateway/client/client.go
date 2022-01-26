@@ -11,8 +11,8 @@ import (
 )
 
 var (
-	AuthCli     proto.AuthServiceClient
-	PostPostCli proto.PostPostServiceClient
+	AuthCli        proto.AuthServiceClient
+	PostArticleCli proto.PostArticleServiceClient
 )
 
 func InitGrpcAuthClient() {
@@ -27,14 +27,14 @@ func GetAuthCli() proto.AuthServiceClient {
 	return AuthCli
 }
 
-func InitGrpcPostPostClient() {
+func InitGrpcPostArticleClient() {
 	conn, err := grpc.Dial(config.GetConfig().Get("grpcServer.post.post.ip").(string)+":"+config.GetConfig().Get("grpcServer.post.post.port").(string), grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)
 	}
-	PostPostCli = proto.NewPostPostServiceClient(conn)
+	PostArticleCli = proto.NewPostArticleServiceClient(conn)
 }
 
-func GetPostPostCli() proto.PostPostServiceClient {
-	return PostPostCli
+func GetPostArticleCli() proto.PostArticleServiceClient {
+	return PostArticleCli
 }

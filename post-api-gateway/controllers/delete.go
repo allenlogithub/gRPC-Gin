@@ -33,7 +33,7 @@ func (p PostController) DelArticle(c *gin.Context) {
 		UserId:    c.MustGet("UserId").(int64),
 		ArticleId: r.ArticleId,
 	}
-	res, err := client.GetPostPostCli().DelArticle(ctx, &s)
+	res, err := client.GetPostArticleCli().DelArticle(ctx, &s)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": "BadRequest",

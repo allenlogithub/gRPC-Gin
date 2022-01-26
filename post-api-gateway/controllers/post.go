@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"context"
+	// "fmt"
 	"net/http"
 	"time"
 
@@ -15,19 +16,16 @@ type (
 	PostController struct{}
 
 	postArticle struct {
-		// AccessToken string `json:"AccessToken" binding:"required"`
 		Content    string `json:"Content" binding:"required"`
 		Visibility string `json:"Visibility" binding:"required"`
 	}
 
 	postArticleAttachment struct {
-		// AccessToken string
 		FileStream string
 		FileName   string
 	}
 
 	postComment struct {
-		// AccessToken string `json:"AccessToken" binding:"required"`
 		Content string `json:"Content" binding:"required"`
 	}
 )
@@ -41,21 +39,13 @@ func (p PostController) PostArticle(c *gin.Context) {
 		})
 		return
 	}
-	tk, err1 := c.Cookie("AccessToken")
-	if err1 != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": nil,
-			"err":     err1.Error(),
-		})
-		return
-	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 	s := proto.PostPostRequest{
-		AccessToken: tk,
-		Content:     r.Content,
-		Visibility:  r.Visibility,
+		UserId:     c.MustGet("UserId").(int64),
+		Content:    r.Content,
+		Visibility: r.Visibility,
 	}
 	res, err2 := client.GetPostPostCli().PostPost(ctx, &s)
 	if err2 != nil {

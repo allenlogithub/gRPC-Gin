@@ -33,5 +33,6 @@ message JWTValidationRequest {
 }
 
 message JWTValidationReply {
-    bool valid = 1;
+    bool  valid = 1;
+    int64 userId = 2;
 }

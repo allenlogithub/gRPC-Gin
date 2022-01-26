@@ -10,7 +10,7 @@ service PostPostService{
 }
 
 message PostPostRequest {
-    string accessToken = 1;
+    int64  userId = 1;
     string content = 2;
     string visibility = 3;
 }

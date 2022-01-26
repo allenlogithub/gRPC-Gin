@@ -28,6 +28,7 @@ func JWTValidationMiddleware() gin.HandlerFunc {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"message": "AuthFailed"})
 			return
 		}
+		c.Set("UserId", res.UserId)
 		c.Next()
 	}
 }

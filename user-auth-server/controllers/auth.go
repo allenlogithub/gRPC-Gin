@@ -80,7 +80,8 @@ func (s *Server) ValidateJWT(ctx context.Context, in *proto.JWTValidationRequest
 	jwtInfo, err1 := jwt.ExtractTokenData(in.GetAccessToken())
 	if err1 != nil {
 		return &proto.JWTValidationReply{
-			Valid: false,
+			UserId: 0,
+			Valid:  false,
 		}, err1
 	}
 	// check redis for JWT TTL
@@ -91,11 +92,13 @@ func (s *Server) ValidateJWT(ctx context.Context, in *proto.JWTValidationRequest
 	i64, err3 := strconv.Atoi(res)
 	if err2 != nil || err3 != nil || int64(i64) != jwtInfo.UserId {
 		return &proto.JWTValidationReply{
-			Valid: false,
+			UserId: 0,
+			Valid:  false,
 		}, err2
 	}
 
 	return &proto.JWTValidationReply{
-		Valid: true,
+		UserId: int64(i64),
+		Valid:  true,
 	}, nil
 }

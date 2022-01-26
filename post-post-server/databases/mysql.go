@@ -43,6 +43,21 @@ func InitMysql() {
 
 	// connect to the database:user
 	connMysql = connectMysql(&cfg, c.Get("databases.mysql.databaseName").(string))
+
+	// create table:article if not exists
+	q := `
+		CREATE TABLE IF NOT EXISTS article (
+			id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+			user_id BIGINT NOT NULL,
+			content TEXT NOT NULL,
+			visibility VARCHAR(10) NOT NULL
+		)
+	`
+	_, err := connMysql.Exec(q)
+	if err != nil {
+		fmt.Println(err)
+		log.Fatal("Create Mysql.table:article failed.")
+	}
 }
 
 func GetMysql() *sql.DB {

@@ -5,7 +5,7 @@ grpcServer:
       port: "4040"
   post:
     get:
-      ip: "172.17.0.6"
+      ip: "172.17.0.11"
       port: "4040"
     post:
       ip: "172.17.0.10"

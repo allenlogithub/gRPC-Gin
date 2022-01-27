@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"os"
 
-	client "post-api-gateway/client"
-	config "post-api-gateway/config"
-	server "post-api-gateway/server"
+	config "post-get-server/config"
+	databases "post-get-server/databases"
+	server "post-get-server/server"
 )
 
 func main() {
@@ -19,10 +19,8 @@ func main() {
 	flag.Parse()
 	fmt.Println("Env:", *environment)
 
-	fmt.Println("Starting post-api-gateway")
+	fmt.Println("Starting post-get-server")
 	config.Init(*environment)
-	client.InitGrpcAuthClient()
-	client.InitGrpcPostArticleClient()
-	client.InitGrpcGetArticleClient()
+	databases.InitMysql()
 	server.Init()
 }

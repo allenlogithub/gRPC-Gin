@@ -13,6 +13,7 @@ import (
 var (
 	AuthCli        proto.AuthServiceClient
 	PostArticleCli proto.PostArticleServiceClient
+	GetArticleCli  proto.GetArticleServiceClient
 )
 
 func InitGrpcAuthClient() {
@@ -37,4 +38,16 @@ func InitGrpcPostArticleClient() {
 
 func GetPostArticleCli() proto.PostArticleServiceClient {
 	return PostArticleCli
+}
+
+func InitGrpcGetArticleClient() {
+	conn, err := grpc.Dial(config.GetConfig().Get("grpcServer.post.get.ip").(string)+":"+config.GetConfig().Get("grpcServer.post.get.port").(string), grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		log.Fatalf("did not connect: %v", err)
+	}
+	GetArticleCli = proto.NewGetArticleServiceClient(conn)
+}
+
+func GetGetArticleCli() proto.GetArticleServiceClient {
+	return GetArticleCli
 }

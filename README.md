@@ -1,7 +1,7 @@
 # gRPC-Gin
 Practice for building a microservices architecture
 
-![Architecture](https://imgur.com/uARMjsml.png)
+![Architecture](https://imgur.com/kFLQsPil.png)
 
 user-api-gateway:  
 &nbsp; handle the request with route:/v1/user/*  
@@ -9,9 +9,9 @@ user-api-gateway:
 
 post-api-gateway:  
 &nbsp; handle the request with route:/v1/post/*  
-&nbsp; pass the data to the responsible gRPC servers
-
-the gRPC servers will send requests to other gRPC servers if required
+&nbsp; pass the data to the responsible gRPC servers  
+&nbsp;  
+&nbsp;  
 
 user-register-server:  
 &nbsp; process request relate to register

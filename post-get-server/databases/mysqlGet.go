@@ -37,21 +37,26 @@ func GetPersonalArticle(r *GetPersonalArticleRequest) (*proto.GetPersonalArticle
 		if err := rows.Scan(&userName, &articleId, &articleContent, &articleCommentContent); err != nil {
 			return nil, fmt.Errorf("GetPersonalArticle.Scan: %v", err)
 		}
-		pc := proto.PersonalCommentItem{}
+		pc, isEmptyCmt := proto.PersonalCommentItem{}, true
 		if userName != nil { // if suerName == nil, then comment == nil
 			pc.UserName = *userName
 			pc.Comment = *articleCommentContent
+			isEmptyCmt = false
 		}
 		pai := proto.PersonalArticleItem{}
 		if _, ok := existedArtsId[articleId]; !ok {
 			pai.ArticleId = articleId
 			pai.Content = articleContent
-			pai.Items = []*proto.PersonalCommentItem{&pc}
+			if !isEmptyCmt {
+				pai.Items = []*proto.PersonalCommentItem{&pc}
+			}
 			rp.Items = append(rp.Items, &pai)
 			existedArtsId[articleId] = 1
 		} else {
 			newItems := rp.Items[len(rp.Items)-1].Items
-			newItems = append(newItems, &pc)
+			if !isEmptyCmt {
+				newItems = append(newItems, &pc)
+			}
 			rp.Items[len(rp.Items)-1].Items = newItems
 		}
 	}

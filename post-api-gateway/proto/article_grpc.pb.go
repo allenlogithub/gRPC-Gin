@@ -214,6 +214,7 @@ var PostArticleService_ServiceDesc = grpc.ServiceDesc{
 type GetArticleServiceClient interface {
 	GetPersonalArticle(ctx context.Context, in *GetPersonalArticleRequest, opts ...grpc.CallOption) (*GetPersonalArticleReply, error)
 	GetFriendArticle(ctx context.Context, in *GetFriendArticleRequest, opts ...grpc.CallOption) (*GetFriendArticleReply, error)
+	GetArticleComment(ctx context.Context, in *GetArticleCommentRequest, opts ...grpc.CallOption) (*GetArticleCommentReply, error)
 }
 
 type getArticleServiceClient struct {
@@ -242,12 +243,22 @@ func (c *getArticleServiceClient) GetFriendArticle(ctx context.Context, in *GetF
 	return out, nil
 }
 
+func (c *getArticleServiceClient) GetArticleComment(ctx context.Context, in *GetArticleCommentRequest, opts ...grpc.CallOption) (*GetArticleCommentReply, error) {
+	out := new(GetArticleCommentReply)
+	err := c.cc.Invoke(ctx, "/proto.GetArticleService/GetArticleComment", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // GetArticleServiceServer is the server API for GetArticleService service.
 // All implementations must embed UnimplementedGetArticleServiceServer
 // for forward compatibility
 type GetArticleServiceServer interface {
 	GetPersonalArticle(context.Context, *GetPersonalArticleRequest) (*GetPersonalArticleReply, error)
 	GetFriendArticle(context.Context, *GetFriendArticleRequest) (*GetFriendArticleReply, error)
+	GetArticleComment(context.Context, *GetArticleCommentRequest) (*GetArticleCommentReply, error)
 	mustEmbedUnimplementedGetArticleServiceServer()
 }
 
@@ -260,6 +271,9 @@ func (UnimplementedGetArticleServiceServer) GetPersonalArticle(context.Context, 
 }
 func (UnimplementedGetArticleServiceServer) GetFriendArticle(context.Context, *GetFriendArticleRequest) (*GetFriendArticleReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetFriendArticle not implemented")
+}
+func (UnimplementedGetArticleServiceServer) GetArticleComment(context.Context, *GetArticleCommentRequest) (*GetArticleCommentReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetArticleComment not implemented")
 }
 func (UnimplementedGetArticleServiceServer) mustEmbedUnimplementedGetArticleServiceServer() {}
 
@@ -310,6 +324,24 @@ func _GetArticleService_GetFriendArticle_Handler(srv interface{}, ctx context.Co
 	return interceptor(ctx, in, info, handler)
 }
 
+func _GetArticleService_GetArticleComment_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetArticleCommentRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GetArticleServiceServer).GetArticleComment(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.GetArticleService/GetArticleComment",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GetArticleServiceServer).GetArticleComment(ctx, req.(*GetArticleCommentRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // GetArticleService_ServiceDesc is the grpc.ServiceDesc for GetArticleService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -324,6 +356,10 @@ var GetArticleService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetFriendArticle",
 			Handler:    _GetArticleService_GetFriendArticle_Handler,
+		},
+		{
+			MethodName: "GetArticleComment",
+			Handler:    _GetArticleService_GetArticleComment_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

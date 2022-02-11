@@ -52,6 +52,7 @@ message DelArticleCommentReply {
 service GetArticleService {
     rpc GetPersonalArticle(GetPersonalArticleRequest) returns (GetPersonalArticleReply) {};
     rpc GetFriendArticle(GetFriendArticleRequest) returns (GetFriendArticleReply) {};
+    rpc GetArticleComment(GetArticleCommentRequest) returns (GetArticleCommentReply) {};
 }
 
 message GetPersonalArticleRequest {
@@ -88,6 +89,20 @@ message FriendArticleItem {
 }
 
 message FriendCommentItem {
+    string userName = 1;
+    string comment = 2;
+}
+
+message GetArticleCommentRequest {
+    int64 userId = 1;
+    int64 articleId = 2;
+}
+
+message GetArticleCommentReply {
+    repeated ArticleComment items = 1;
+}
+
+message ArticleComment {
     string userName = 1;
     string comment = 2;
 }

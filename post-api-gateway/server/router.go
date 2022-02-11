@@ -22,6 +22,7 @@ func NewRouter() *gin.Engine {
 			postGroup.POST("/articlecomment", middlewares.JWTValidationMiddleware(), post.PostArticleComment)
 			postGroup.DELETE("/articlecomment", middlewares.JWTValidationMiddleware(), post.DelArticleComment)
 			postGroup.GET("/personalarticle", middlewares.JWTValidationMiddleware(), post.GetPersonalArticle)
+			postGroup.GET("/articlecomment", middlewares.JWTValidationMiddleware(), post.GetArticleComment)
 			// postGroup.GET("/friendarticle", middlewares.JWTValidationMiddleware(), post.GetFriendArticle)
 		}
 	}

@@ -28,3 +28,20 @@ func (s *Server) GetPersonalArticle(ctx context.Context, in *proto.GetPersonalAr
 		Items: res.Items,
 	}, nil
 }
+
+func (s *Server) GetArticleComment(ctx context.Context, in *proto.GetArticleCommentRequest) (*proto.GetArticleCommentReply, error) {
+	d := databases.GetArticleCommentRequest{
+		UserId:    in.GetUserId(),
+		ArticleId: in.GetArticleId(),
+	}
+	res, err := databases.GetArticleComment(&d)
+	if err != nil {
+		return &proto.GetArticleCommentReply{
+			Items: nil,
+		}, err
+	}
+
+	return &proto.GetArticleCommentReply{
+		Items: res.Items,
+	}, nil
+}

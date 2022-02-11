@@ -10,6 +10,11 @@ type (
 	GetPersonalArticleRequest struct {
 		UserId int64
 	}
+
+	GetArticleCommentRequest struct {
+		ArticleId int64
+		UserId    int64
+	}
 )
 
 // func: get articles of an user
@@ -59,6 +64,39 @@ func GetPersonalArticle(r *GetPersonalArticleRequest) (*proto.GetPersonalArticle
 			}
 			rp.Items[len(rp.Items)-1].Items = newItems
 		}
+	}
+
+	return &rp, nil
+}
+
+// not handling the empty comment situation since this API is called
+// after a comment post action which guarantees the comment length of
+// an aticle will > 0
+func GetArticleComment(r *GetArticleCommentRequest) (*proto.GetArticleCommentReply, error) {
+	// NEED TO INPLEMENTED FRIEND LIST CHECKING IN THE FUTURE IN ORDER TO GET THE COMMENT FROM FRIEND'S ARTICLE
+	// THE SITUATION SO FAR IS NO LIMITATION
+	q := `
+	SELECT register.name, articlecomment.content
+	FROM articlecomment
+		LEFT JOIN register
+			ON articlecomment.user_id=register.id
+	WHERE articlecomment.article_id=?
+	`
+	rows, err := connMysql.Query(q, r.ArticleId)
+	if err != nil {
+		return nil, fmt.Errorf("GetArticleComment.Query: %v", err)
+	}
+	rp := proto.GetArticleCommentReply{}
+	for rows.Next() {
+		var userName string
+		var commentContent string
+		if err := rows.Scan(&userName, &commentContent); err != nil {
+			return nil, fmt.Errorf("GetArticleComment.Scan: %v", err)
+		}
+		ac := proto.ArticleComment{}
+		ac.UserName = userName
+		ac.Comment = commentContent
+		rp.Items = append(rp.Items, &ac)
 	}
 
 	return &rp, nil

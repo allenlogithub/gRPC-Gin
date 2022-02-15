@@ -1,0 +1,19 @@
+databases:
+  redis:
+    domain: "172.17.0.102"
+    port: "6379"
+    user: 
+    password: ""
+    databaseName: 0
+  mysql:
+    domain: "172.17.0.103"
+    port: "3306"
+    user: "root"
+    password: "my-secret-pw"
+    net: "tcp"
+    databaseName: "user"
+server:
+  port: "4040"
+jwt:
+  secret: "23ec00e2-9320-46b1-8acb-0cd7f0e00890"
+  ttl: 20

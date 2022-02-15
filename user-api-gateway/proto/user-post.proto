@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+option go_package = "source/proto";
+
+package proto;
+
+service UserPostService{
+    rpc SendFriendRequest(SendFriendRequestRequest) returns (SendFriendRequestReply) {};
+    rpc AcceptFriendRequest(AcceptFriendRequestRequest) returns (AcceptFriendRequestReply) {};
+}
+
+message SendFriendRequestRequest{
+    int64 requestorUserId = 1;
+    int64 receiverUserId = 2;
+}
+
+message SendFriendRequestReply{
+    bool isSent = 1;
+}
+
+message AcceptFriendRequestRequest{
+    int64 requestorUserId = 1;
+    int64 receiverUserId = 2;
+}
+
+message AcceptFriendRequestReply{
+    bool isAccepted = 1;
+}

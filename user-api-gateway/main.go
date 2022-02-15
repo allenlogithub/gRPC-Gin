@@ -23,5 +23,6 @@ func main() {
 	config.Init(*environment)
 	client.InitGrpcRegisterClient()
 	client.InitGrpcAuthClient()
+	client.InitGrpcUserPostClient()
 	server.Init()
 }

@@ -5,7 +5,6 @@ import (
 
 	controllers "user-api-gateway/controllers"
 	middlewares "user-api-gateway/middlewares"
-	// "github.com/vsouza/go-gin-boilerplate/middlewares"
 )
 
 func NewRouter() *gin.Engine {
@@ -13,21 +12,18 @@ func NewRouter() *gin.Engine {
 	router.Use(gin.Logger())
 	router.Use(gin.Recovery())
 
-	// health := new(controllers.HealthController)
-
-	// router.GET("/health", health.Status)
-	// router.Use(middlewares.AuthMiddleware())
-
 	v1 := router.Group("v1")
 	{
 		userGroup := v1.Group("user")
 		{
 			user := new(controllers.UserController)
-			// userGroup.GET("/greeting/:id", user.Login)
 			userGroup.POST("/register", user.Register)
 			userGroup.POST("/login", user.Login)
 			userGroup.POST("/logout", middlewares.JWTValidationMiddleware(), user.Logout)
+			userGroup.POST("/sendfriendrequest", middlewares.JWTValidationMiddleware(), user.SendFriendRequest)
+			userGroup.POST("/acceptfriendrequest", middlewares.JWTValidationMiddleware(), user.AcceptFriendRequest)
 		}
 	}
+
 	return router
 }

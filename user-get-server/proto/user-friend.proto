@@ -1,0 +1,50 @@
+syntax = "proto3";
+
+option go_package = "source/proto";
+
+package proto;
+
+service UserFriendService{
+    rpc GetFriendList(GetFriendListRequest) returns (GetFriendListReply) {};
+    rpc SearchUser(SearchUserRequest) returns (SearchUserReply) {};
+    rpc GetFriendRequestList(GetFriendRequestListRequest) returns (GetFriendRequestListReply) {};
+}
+
+message GetFriendListRequest {
+    int64 userId = 1;
+}
+
+message GetFriendListReply {
+    repeated FriendInfo items = 1;
+}
+
+message FriendInfo {
+    string friendUserName = 1;
+    int64 friendUserId = 2;
+}
+
+message SearchUserRequest {
+    string searchString = 1;
+}
+
+message SearchUserReply {
+    repeated UserInfo items = 1;
+}
+
+message UserInfo {
+    string userName = 1;
+    int64 userId = 2;
+}
+
+message GetFriendRequestListRequest {
+    int64 UserId = 1;
+}
+
+message GetFriendRequestListReply {
+    repeated FriendRequest items = 1;
+}
+
+message FriendRequest {
+    string userName = 1;
+    int64 userId = 2;
+}

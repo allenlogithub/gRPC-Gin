@@ -12,12 +12,6 @@ import (
 	proto "post-api-gateway/proto"
 )
 
-type (
-	getArticleComment struct {
-		ArticleId int64 `json:"ArticleId" binding:"required"`
-	}
-)
-
 func (p PostController) GetPersonalArticle(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()

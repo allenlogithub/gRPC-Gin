@@ -23,11 +23,11 @@ type (
 // func: get friend list
 func GetFriendList(r *GetFriendListRequest) (*proto.GetFriendListReply, error) {
 	q := `
-	SELECT register.id, register.name 
+	SELECT friendlist.friend_user_id, register.name
 	FROM friendlist
-		LEFT JOIN friendlist
+		LEFT JOIN register
 			ON friendlist.friend_user_id=register.id
-	WHERE id=?
+	WHERE friendlist.user_id=?
 	`
 	rows, err := connMysql.Query(q, r.UserId)
 	if err != nil {
@@ -37,7 +37,7 @@ func GetFriendList(r *GetFriendListRequest) (*proto.GetFriendListReply, error) {
 	for rows.Next() {
 		var friendUserName string
 		var friendUserId int64
-		if err := rows.Scan(&friendUserName, &friendUserId); err != nil {
+		if err := rows.Scan(&friendUserId, &friendUserName); err != nil {
 			return nil, fmt.Errorf("GetFriendList.Scan: %v", err)
 		}
 		fi := proto.FriendInfo{}
@@ -55,7 +55,7 @@ func SearchUser(r *SearchUserRequest) (*proto.SearchUserReply, error) {
 	FROM register
 	WHERE register.name LIKE ?
 	`
-	rows, err := connMysql.Query(q, string('%')+r.SearchString+string('%'))
+	rows, err := connMysql.Query(q, string("%")+r.SearchString+string("%"))
 	if err != nil {
 		return nil, fmt.Errorf("SearchUser.Query: %v", err)
 	}
@@ -80,7 +80,7 @@ func GetFriendRequestList(r *GetFriendRequestListRequest) (*proto.GetFriendReque
 	SELECT register.id, register.name
 	FROM friendrequest
 		LEFT JOIN register
-			ON friendrequest.user_id=register.id
+			ON friendrequest.requestor_user_id=register.id
 	WHERE friendrequest.receiver_user_id=?
 	`
 	rows, err := connMysql.Query(q, r.UserId)

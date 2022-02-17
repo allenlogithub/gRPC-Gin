@@ -37,7 +37,7 @@ message UserInfo {
 }
 
 message GetFriendRequestListRequest {
-    int64 UserId = 1;
+    int64 userId = 1;
 }
 
 message GetFriendRequestListReply {

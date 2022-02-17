@@ -94,3 +94,77 @@ func (u UserController) AcceptFriendRequest(c *gin.Context) {
 
 	return
 }
+
+func (u UserController) GetFriendList(c *gin.Context) {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+	s := proto.GetFriendListRequest{
+		UserId: c.MustGet("UserId").(int64),
+	}
+	res, err := client.GetUserGetFriendCli().GetFriendList(ctx, &s)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "gRPC.GetFriendListFailed",
+			"err":     err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"message": res,
+		"err":     nil,
+	})
+
+	return
+}
+
+func (u UserController) SearchUser(c *gin.Context) {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+	searchString := c.Query("SearchString")
+	if len(searchString) < 2 {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "InvalidSearchString",
+			"err":     "InvalidSearchString",
+		})
+		return
+	}
+	s := proto.SearchUserRequest{
+		SearchString: searchString,
+	}
+	res, err := client.GetUserGetFriendCli().SearchUser(ctx, &s)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "gRPC.SearchUserFailed",
+			"err":     err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"message": res,
+		"err":     nil,
+	})
+
+	return
+}
+
+func (u UserController) GetFriendRequestList(c *gin.Context) {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+	s := proto.GetFriendRequestListRequest{
+		UserId: c.MustGet("UserId").(int64),
+	}
+	res, err := client.GetUserGetFriendCli().GetFriendRequestList(ctx, &s)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "gRPC.GetFriendRequestListFailed",
+			"err":     err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"message": res,
+		"err":     nil,
+	})
+
+	return
+}

@@ -24,5 +24,6 @@ func main() {
 	client.InitGrpcRegisterClient()
 	client.InitGrpcAuthClient()
 	client.InitGrpcUserPostClient()
+	client.InitGrpcUserGetFriendClient()
 	server.Init()
 }

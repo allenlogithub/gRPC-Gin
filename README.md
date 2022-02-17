@@ -1,7 +1,7 @@
 # gRPC-Gin
 Practice for building a microservices architecture
 
-![Architecture](https://imgur.com/Qe7UGvEl.png)
+![Architecture](https://imgur.com/dmnFnkyl.png)
 
 user-api-gateway:  
 &nbsp; handles the request under routes:/v1/user/*  
@@ -14,14 +14,19 @@ post-api-gateway:
 &nbsp;  
 
 user-register-server:  
-&nbsp; processes the request related to register action
+&nbsp; processes the request related to register actions
 
 user-auth-server:  
-&nbsp; processes the request related to login/ logout/ JWT Validation action
+&nbsp; processes the request related to login/ logout/ JWT Validation actions
 
-post-post-server:  
-&nbsp; processes the request related to post insertion/ deletion action
+user-get-server:  
+&nbsp; processes the request related to user selection actions
+
+user-post-server:  
+&nbsp; processes the request related to user insertion actions
 
 post-get-server:  
-&nbsp; processes the request related to post selection action
+&nbsp; processes the request related to post selection actions
 
+post-post-server:  
+&nbsp; processes the request related to post insertion/ deletion actions

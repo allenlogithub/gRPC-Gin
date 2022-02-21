@@ -31,6 +31,7 @@ func (s *Server) GetFriendList(ctx context.Context, in *proto.GetFriendListReque
 
 func (s *Server) SearchUser(ctx context.Context, in *proto.SearchUserRequest) (*proto.SearchUserReply, error) {
 	d := databases.SearchUserRequest{
+		UserId:       in.GetUserId(),
 		SearchString: in.GetSearchString(),
 	}
 	result, err := databases.SearchUser(&d)

@@ -12,6 +12,7 @@ type (
 	}
 
 	SearchUserRequest struct {
+		UserId       int64
 		SearchString string
 	}
 
@@ -49,13 +50,35 @@ func GetFriendList(r *GetFriendListRequest) (*proto.GetFriendListReply, error) {
 	return &rp, nil
 }
 
+// query steps:
+// 	search column:register.name contains SearchString
+// 	join table:friendlist to filter out user of which is in friend list
+// 	join table:friendrequest to filter out user of which has received/ requested a friend request
 func SearchUser(r *SearchUserRequest) (*proto.SearchUserReply, error) {
 	q := `
-	SELECT register.id, register.name
-	FROM register
-	WHERE register.name LIKE ?
+	SELECT fl.id, fl.name
+	FROM (
+		SELECT friendlist.friend_user_id, r.id, r.name, friendlist.user_id
+		FROM (
+			SELECT register.id, register.name
+			FROM register
+			WHERE register.name LIKE ?
+		)AS r
+			LEFT JOIN friendlist ON friendlist.user_id=?
+				AND r.id=friendlist.friend_user_id
+		WHERE friendlist.friend_user_id IS NULL
+		) AS fl
+			LEFT JOIN friendrequest ON (
+				fl.id=friendrequest.requestor_user_id
+				AND friendrequest.receiver_user_id=?
+			) OR (
+				fl.id=friendrequest.receiver_user_id
+				AND friendrequest.requestor_user_id=?
+			)
+		WHERE requestor_user_id IS NULL
+			AND fl.id<>?
 	`
-	rows, err := connMysql.Query(q, string("%")+r.SearchString+string("%"))
+	rows, err := connMysql.Query(q, string("%")+r.SearchString+string("%"), r.UserId, r.UserId, r.UserId, r.UserId)
 	if err != nil {
 		return nil, fmt.Errorf("SearchUser.Query: %v", err)
 	}

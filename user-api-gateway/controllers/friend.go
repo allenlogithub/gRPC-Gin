@@ -129,6 +129,7 @@ func (u UserController) SearchUser(c *gin.Context) {
 		return
 	}
 	s := proto.SearchUserRequest{
+		UserId:       c.MustGet("UserId").(int64),
 		SearchString: searchString,
 	}
 	res, err := client.GetUserGetFriendCli().SearchUser(ctx, &s)

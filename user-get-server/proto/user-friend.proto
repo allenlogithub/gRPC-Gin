@@ -24,7 +24,8 @@ message FriendInfo {
 }
 
 message SearchUserRequest {
-    string searchString = 1;
+    int64 userId = 1;
+    string searchString = 2;
 }
 
 message SearchUserReply {

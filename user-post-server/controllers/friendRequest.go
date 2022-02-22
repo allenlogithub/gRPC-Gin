@@ -44,3 +44,19 @@ func (s *Server) AcceptFriendRequest(ctx context.Context, in *proto.AcceptFriend
 		IsAccepted: true,
 	}, nil
 }
+
+func (s *Server) RejectFriendRequest(ctx context.Context, in *proto.RejectFriendRequestRequest) (*proto.RejectFriendRequestReply, error) {
+	d := databases.DelFriendRequestRequest{
+		RequestorUserId: in.GetRequestorUserId(),
+		ReceiverUserId:  in.GetReceiverUserId(),
+	}
+	if err := databases.DelFriendRequest(&d); err != nil {
+		return &proto.RejectFriendRequestReply{
+			IsRejected: false,
+		}, err
+	}
+
+	return &proto.RejectFriendRequestReply{
+		IsRejected: true,
+	}, nil
+}

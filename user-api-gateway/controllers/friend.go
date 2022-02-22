@@ -19,6 +19,10 @@ type (
 	acceptFriendRequest struct {
 		RequestorUserId int64 `json:"RequestorUserId" binding:"required"`
 	}
+
+	rejectFriendRequest struct {
+		RequestorUserId int64 `json:"RequestorUserId" binding:"required"`
+	}
 )
 
 func (u UserController) SendFriendRequest(c *gin.Context) {
@@ -80,6 +84,39 @@ func (u UserController) AcceptFriendRequest(c *gin.Context) {
 		ReceiverUserId:  c.MustGet("UserId").(int64),
 	}
 	res, err := client.GetUserPostCli().AcceptFriendRequest(ctx, &s)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "AcceptFriendRequestFailed",
+			"err":     err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"message": res,
+		"err":     nil,
+	})
+
+	return
+}
+
+func (u UserController) RejectFriendRequest(c *gin.Context) {
+	var r rejectFriendRequest
+	if err := c.BindJSON(&r); err != nil {
+		c.JSON(c.Writer.Status(), gin.H{
+			"message": "BadRequest",
+			"err":     err.Error(),
+		})
+		return
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+
+	s := proto.RejectFriendRequestRequest{
+		RequestorUserId: r.RequestorUserId,
+		ReceiverUserId:  c.MustGet("UserId").(int64),
+	}
+	res, err := client.GetUserPostCli().RejectFriendRequest(ctx, &s)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": "AcceptFriendRequestFailed",

@@ -7,6 +7,7 @@ package proto;
 service UserPostService{
     rpc SendFriendRequest(SendFriendRequestRequest) returns (SendFriendRequestReply) {};
     rpc AcceptFriendRequest(AcceptFriendRequestRequest) returns (AcceptFriendRequestReply) {};
+    rpc RejectFriendRequest(RejectFriendRequestRequest) returns (RejectFriendRequestReply) {};
 }
 
 message SendFriendRequestRequest{
@@ -25,4 +26,13 @@ message AcceptFriendRequestRequest{
 
 message AcceptFriendRequestReply{
     bool isAccepted = 1;
+}
+
+message RejectFriendRequestRequest{
+    int64 requestorUserId = 1;
+    int64 receiverUserId = 2;
+}
+
+message RejectFriendRequestReply{
+    bool isRejected = 1;
 }

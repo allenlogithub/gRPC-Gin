@@ -22,6 +22,7 @@ func NewRouter() *gin.Engine {
 			userGroup.POST("/logout", middlewares.JWTValidationMiddleware(), user.Logout)
 			userGroup.POST("/sendfriendrequest", middlewares.JWTValidationMiddleware(), user.SendFriendRequest)
 			userGroup.POST("/acceptfriendrequest", middlewares.JWTValidationMiddleware(), user.AcceptFriendRequest)
+			userGroup.DELETE("/rejectfriendrequest", middlewares.JWTValidationMiddleware(), user.RejectFriendRequest)
 			userGroup.GET("/friendlist", middlewares.JWTValidationMiddleware(), user.GetFriendList)
 			userGroup.GET("/searchuser", middlewares.JWTValidationMiddleware(), user.SearchUser)
 			userGroup.GET("/friendrequestlist", middlewares.JWTValidationMiddleware(), user.GetFriendRequestList)

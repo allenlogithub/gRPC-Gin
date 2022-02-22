@@ -15,6 +15,11 @@ type (
 		RequestorUserId int64
 		ReceiverUserId  int64
 	}
+
+	DelFriendRequestRequest struct {
+		RequestorUserId int64
+		ReceiverUserId  int64
+	}
 )
 
 // func: add a friend request record
@@ -35,6 +40,16 @@ func AddFriendRequest(r *AddFriendRequestRequest) error {
 	_, err = connMysql.Exec("INSERT INTO friendrequest (requestor_user_id, receiver_user_id) VALUES (?, ?)", r.RequestorUserId, r.ReceiverUserId)
 	if err != nil {
 		return fmt.Errorf("AddFriendRequest: %v", err)
+	}
+
+	return nil
+}
+
+// func: delete a friend request record
+func DelFriendRequest(r *DelFriendRequestRequest) error {
+	_, err := connMysql.Exec("DELETE FROM friendrequest WHERE requestor_user_id=? AND receiver_user_id=?", r.RequestorUserId, r.ReceiverUserId)
+	if err != nil {
+		return fmt.Errorf("DelFriendRequestRequest: %v", err)
 	}
 
 	return nil

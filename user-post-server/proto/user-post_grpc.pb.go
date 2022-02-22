@@ -24,6 +24,7 @@ const _ = grpc.SupportPackageIsVersion7
 type UserPostServiceClient interface {
 	SendFriendRequest(ctx context.Context, in *SendFriendRequestRequest, opts ...grpc.CallOption) (*SendFriendRequestReply, error)
 	AcceptFriendRequest(ctx context.Context, in *AcceptFriendRequestRequest, opts ...grpc.CallOption) (*AcceptFriendRequestReply, error)
+	RejectFriendRequest(ctx context.Context, in *RejectFriendRequestRequest, opts ...grpc.CallOption) (*RejectFriendRequestReply, error)
 }
 
 type userPostServiceClient struct {
@@ -52,12 +53,22 @@ func (c *userPostServiceClient) AcceptFriendRequest(ctx context.Context, in *Acc
 	return out, nil
 }
 
+func (c *userPostServiceClient) RejectFriendRequest(ctx context.Context, in *RejectFriendRequestRequest, opts ...grpc.CallOption) (*RejectFriendRequestReply, error) {
+	out := new(RejectFriendRequestReply)
+	err := c.cc.Invoke(ctx, "/proto.UserPostService/RejectFriendRequest", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserPostServiceServer is the server API for UserPostService service.
 // All implementations must embed UnimplementedUserPostServiceServer
 // for forward compatibility
 type UserPostServiceServer interface {
 	SendFriendRequest(context.Context, *SendFriendRequestRequest) (*SendFriendRequestReply, error)
 	AcceptFriendRequest(context.Context, *AcceptFriendRequestRequest) (*AcceptFriendRequestReply, error)
+	RejectFriendRequest(context.Context, *RejectFriendRequestRequest) (*RejectFriendRequestReply, error)
 	mustEmbedUnimplementedUserPostServiceServer()
 }
 
@@ -70,6 +81,9 @@ func (UnimplementedUserPostServiceServer) SendFriendRequest(context.Context, *Se
 }
 func (UnimplementedUserPostServiceServer) AcceptFriendRequest(context.Context, *AcceptFriendRequestRequest) (*AcceptFriendRequestReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AcceptFriendRequest not implemented")
+}
+func (UnimplementedUserPostServiceServer) RejectFriendRequest(context.Context, *RejectFriendRequestRequest) (*RejectFriendRequestReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RejectFriendRequest not implemented")
 }
 func (UnimplementedUserPostServiceServer) mustEmbedUnimplementedUserPostServiceServer() {}
 
@@ -120,6 +134,24 @@ func _UserPostService_AcceptFriendRequest_Handler(srv interface{}, ctx context.C
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UserPostService_RejectFriendRequest_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RejectFriendRequestRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserPostServiceServer).RejectFriendRequest(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.UserPostService/RejectFriendRequest",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserPostServiceServer).RejectFriendRequest(ctx, req.(*RejectFriendRequestRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // UserPostService_ServiceDesc is the grpc.ServiceDesc for UserPostService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -134,6 +166,10 @@ var UserPostService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "AcceptFriendRequest",
 			Handler:    _UserPostService_AcceptFriendRequest_Handler,
+		},
+		{
+			MethodName: "RejectFriendRequest",
+			Handler:    _UserPostService_RejectFriendRequest_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
